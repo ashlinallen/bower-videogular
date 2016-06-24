@@ -454,16 +454,22 @@ angular.module("com.2fdevs.videogular")
             }
         };
 
-        this.toggleFullScreen = function () {
+        this.toggleFullScreen = function (el) {
+            if (el !== undefined) {
+                el = document.getElementsByClassName(el)[0];
+            }
             // There is no native full screen support or we want to play inline
             if (!vgFullscreen.isAvailable || !this.nativeFullscreen) {
+                if (el === undefined) {
+                    el = this.videogularElement;
+                }
                 if (this.isFullScreen) {
-                    this.videogularElement.removeClass("fullscreen");
-                    this.videogularElement.css("z-index", "auto");
+                    el.removeClass("fullscreen");
+                    el.css("z-index", "auto");
                 }
                 else {
-                    this.videogularElement.addClass("fullscreen");
-                    this.videogularElement.css("z-index", VG_UTILS.getZIndex());
+                    el.addClass("fullscreen");
+                    el.css("z-index", VG_UTILS.getZIndex());
                 }
 
                 this.isFullScreen = !this.isFullScreen;
@@ -478,11 +484,14 @@ angular.module("com.2fdevs.videogular")
                 else {
                     // On mobile devices we should make fullscreen only the video object
                     if (VG_UTILS.isMobileDevice()) {
+                        if (el === undefined) {
+                            el = this.mediaElement[0];
+                        }
                         // On iOS we should check if user pressed before fullscreen button
                         // and also if metadata is loaded
                         if (VG_UTILS.isiOSDevice()) {
                             if (isMetaDataLoaded) {
-                                this.enterElementInFullScreen(this.mediaElement[0]);
+                                this.enterElementInFullScreen(el);
                             }
                             else {
                                 isFullScreenPressed = true;
@@ -490,11 +499,14 @@ angular.module("com.2fdevs.videogular")
                             }
                         }
                         else {
-                            this.enterElementInFullScreen(this.mediaElement[0]);
+                            this.enterElementInFullScreen(el);
                         }
                     }
                     else {
-                        this.enterElementInFullScreen(this.videogularElement[0]);
+                        if (el === undefined) {
+                            el = this.videogularElement[0];
+                        }
+                        this.enterElementInFullScreen(el);
                     }
                 }
             }
